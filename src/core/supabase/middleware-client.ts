@@ -17,7 +17,7 @@ export default function createMiddlewareClient(
 
 function getCookieStrategy(request: NextRequest, response: NextResponse) {
   return getSupabaseCookieAdapter({
-    set: (name: string, value: string, options: CookieOptions) => {
+    set: (name, value, options) => {
       request.cookies.set({ name, value, ...options });
 
       response = NextResponse.next({
@@ -35,7 +35,7 @@ function getCookieStrategy(request: NextRequest, response: NextResponse) {
     get: (name: string) => {
       return request.cookies.get(name)?.value;
     },
-    remove: (name: string, options: CookieOptions) => {
+    remove: (name, options) => {
       request.cookies.set({
         name,
         value: '',

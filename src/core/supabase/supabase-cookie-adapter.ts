@@ -16,7 +16,7 @@ export default function getSupabaseCookieAdapter(params: {
   remove: (key: string, options?: CookieOptions) => void;
   get: (key: string) => string | undefined;
 }) {
-  const set = (key: string, value: string, options: CookieOptions) => {
+  const set = (key: string, value: string, options?: CookieOptions) => {
     if (key.endsWith(CODE_VERIFIER_COOKIE_SUFFIX)) {
       params.set(key, value, options);
 
@@ -48,7 +48,7 @@ export default function getSupabaseCookieAdapter(params: {
     return chunks !== null ? JSON.parse(chunks) : null;
   };
 
-  function deleteChunkedCookies(key: string, from = 0, options: CookieOptions) {
+  function deleteChunkedCookies(key: string, from = 0, options?: CookieOptions) {
     for (let i = from; ; i++) {
       const cookieName = `${key}.${i}`;
       const value = params.get(cookieName);
@@ -61,13 +61,13 @@ export default function getSupabaseCookieAdapter(params: {
     }
   }
 
-  function deleteSingleCookie(key: string, options: CookieOptions) {
+  function deleteSingleCookie(key: string, options?: CookieOptions) {
     if (params.get(key)) {
       params.remove(key, options);
     }
   }
 
-  const remove = (key: string, options: CookieOptions) => {
+  const remove = (key: string, options?: CookieOptions) => {
     deleteSingleCookie(key, options);
     deleteChunkedCookies(key, 0, options);
   };

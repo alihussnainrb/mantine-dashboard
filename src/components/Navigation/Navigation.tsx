@@ -86,8 +86,6 @@ const mockdata = [
         icon: IconRotateRectangle,
         link: PATH_AUTH.passwordReset,
       },
-      { label: 'Clerk', icon: IconUserShield, link: PATH_AUTH.clerk },
-      { label: 'Auth0', icon: IconBrandAuth0, link: PATH_AUTH.auth0 },
     ],
   },
   {

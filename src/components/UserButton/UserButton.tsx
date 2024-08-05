@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import useUser from '@/core/hooks/use-user';
 import {
   Avatar,
   Group,
@@ -7,6 +7,7 @@ import {
   UnstyledButtonProps,
 } from '@mantine/core';
 import { IconChevronRight } from '@tabler/icons-react';
+import { ReactNode } from 'react';
 import classes from './UserButton.module.css';
 
 type UserProfileButtonProps = {
@@ -25,6 +26,7 @@ const UserProfileButton = ({
   asAction,
   ...others
 }: UserProfileButtonProps) => {
+  const { data: user } = useUser()
   return (
     <UnstyledButton className={classes.user} {...others}>
       <Group>
@@ -32,10 +34,10 @@ const UserProfileButton = ({
 
         <div style={{ flex: 1 }}>
           <Text size="sm" fw={500}>
-            {name}
+            {user?.name || 'User Name'}
           </Text>
 
-          <Text size="xs">{email}</Text>
+          <Text size="xs">{user?.email || 'user email'}</Text>
         </div>
 
         {icon && asAction && <IconChevronRight size="0.9rem" stroke={1.5} />}

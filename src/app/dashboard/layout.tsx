@@ -1,12 +1,11 @@
 'use client';
-
-import { AppShell, Container, rem, useMantineTheme } from '@mantine/core';
-import { ReactNode, useState } from 'react';
-import { useDisclosure, useMediaQuery } from '@mantine/hooks';
 import AppMain from '@/components/AppMain';
-import Navigation from '@/components/Navigation';
-import HeaderNav from '@/components/HeaderNav';
 import FooterNav from '@/components/FooterNav';
+import HeaderNav from '@/components/HeaderNav';
+import Navigation from '@/components/Navigation';
+import { AppShell, Container, rem, useMantineTheme } from '@mantine/core';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { ReactNode } from 'react';
 
 type Props = {
   children: ReactNode;

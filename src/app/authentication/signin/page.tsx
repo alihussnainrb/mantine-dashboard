@@ -1,5 +1,8 @@
 'use client';
 
+import { Surface } from '@/components';
+import useSupabase from '@/core/hooks/use-supabase';
+import { PATH_AUTH, PATH_DASHBOARD } from '@/routes';
 import {
   Button,
   Center,
@@ -12,15 +15,13 @@ import {
   TextProps,
   Title,
 } from '@mantine/core';
-import Link from 'next/link';
-import { PATH_AUTH, PATH_DASHBOARD } from '@/routes';
-import { Surface } from '@/components';
-import classes from './page.module.css';
 import { useForm, zodResolver } from '@mantine/form';
+import { showNotification } from '@mantine/notifications';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { z } from 'zod'
-import useSignInWithEmailPassword from '@/core/hooks/use-sign-in-with-email-password';
-import useSupabase from '@/core/hooks/use-supabase';
+import { z } from 'zod';
+import classes from './page.module.css';
+import useTransition from '@/core/hooks/use-transition';
 
 const LINK_PROPS: TextProps = {
   className: classes.link,
@@ -38,16 +39,29 @@ function Page() {
   const form = useForm<FormValues>({
     validate: zodResolver(schema)
   });
+  const [pending, startTransition] = useTransition()
   const supabase = useSupabase()
 
-
-  const handleSubmit = async (values: FormValues) => {
-    await supabase.auth.signInWithPassword({
-      email: values.email,
-      password: values.password,
-      phone: ''
+  const handleSubmit = (values: FormValues) => {
+    startTransition(async () => {
+      try {
+        const { data: response, error } = await supabase.auth.signInWithPassword({
+          email: values.email,
+          password: values.password,
+          phone: ''
+        })
+        console.log(response)
+        console.log(error)
+        if (error) throw error;
+        if (!response.user) throw new Error("Response null");
+        router.push(PATH_DASHBOARD.default)
+      } catch (error) {
+        showNotification({
+          color: "red",
+          message: "Failed to signin, Please make sure credentials are correct.",
+        })
+      }
     })
-    router.push(PATH_DASHBOARD.default)
   }
 
   return (
@@ -95,7 +109,13 @@ function Page() {
               Forgot password?
             </Text>
           </Group>
-          <Button fullWidth mt="xl" type="submit">
+          <Button
+            fullWidth
+            mt="xl"
+            type="submit"
+            loading={pending}
+            disabled={pending}
+          >
             Sign in
           </Button>
         </form>

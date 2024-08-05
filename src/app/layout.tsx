@@ -62,7 +62,7 @@ export default function RootLayout({
       </head>
       <body>
         <MantineProvider theme={myTheme} defaultColorScheme="light">
-          <Notifications position="bottom-right" zIndex={1000} />
+          <Notifications position="top-right" zIndex={1000} />
           <ModalsProvider>{children}</ModalsProvider>
         </MantineProvider>
       </body>
