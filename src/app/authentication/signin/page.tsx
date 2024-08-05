@@ -16,27 +16,39 @@ import Link from 'next/link';
 import { PATH_AUTH, PATH_DASHBOARD } from '@/routes';
 import { Surface } from '@/components';
 import classes from './page.module.css';
-import { useForm } from '@mantine/form';
+import { useForm, zodResolver } from '@mantine/form';
 import { useRouter } from 'next/navigation';
+import { z } from 'zod'
+import useSignInWithEmailPassword from '@/core/hooks/use-sign-in-with-email-password';
+import useSupabase from '@/core/hooks/use-supabase';
 
 const LINK_PROPS: TextProps = {
   className: classes.link,
 };
 
-function Page() {
-  const { push } = useRouter();
-  const form = useForm({
-    initialValues: { email: 'demo@email.com', password: 'Demo@123' },
+const schema = z.object({
+  email: z.string().min(1, "Email cannot be empty").email({ message: "Invalid email" }),
+  password: z.string().min(1, "Password must include at least 6 characters")
+})
 
-    // functions will be used to validate values at corresponding key
-    validate: {
-      email: (value) => (/^\S+@\S+$/.test(value) ? null : 'Invalid email'),
-      password: (value) =>
-        value && value?.length < 6
-          ? 'Password must include at least 6 characters'
-          : null,
-    },
+type FormValues = z.infer<typeof schema>
+
+function Page() {
+  const router = useRouter();
+  const form = useForm<FormValues>({
+    validate: zodResolver(schema)
   });
+  const supabase = useSupabase()
+
+
+  const handleSubmit = async (values: FormValues) => {
+    await supabase.auth.signInWithPassword({
+      email: values.email,
+      password: values.password,
+      phone: ''
+    })
+    router.push(PATH_DASHBOARD.default)
+  }
 
   return (
     <>
@@ -52,9 +64,7 @@ function Page() {
 
       <Surface component={Paper} className={classes.card}>
         <form
-          onSubmit={form.onSubmit(() => {
-            push(PATH_DASHBOARD.default);
-          })}
+          onSubmit={form.onSubmit(handleSubmit)}
         >
           <TextInput
             label="Email"

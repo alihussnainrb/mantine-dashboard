@@ -34,8 +34,6 @@ import {
 import { IconDotsVertical, IconSearch, IconSend } from '@tabler/icons-react';
 import { useColorScheme, useMediaQuery } from '@mantine/hooks';
 import { Carousel } from '@mantine/carousel';
-import ChatsListData from '@/public/mocks/ChatsList.json';
-import ChatItemsData from '@/public/mocks/ChatItems.json';
 import UserProfileData from '@/public/mocks/UserProfile.json';
 import { useFetchData } from '@/hooks';
 
