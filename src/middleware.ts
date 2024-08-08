@@ -15,6 +15,8 @@ const publicPaths: RegExp[] = [
 
 ]
 
+const authRoutes = ['/authentication/signin', '/authentication/signup']
+
 
 export const config = {
     matcher: [
@@ -38,6 +40,15 @@ export async function middleware(request: NextRequest) {
 async function sessionMiddleware(req: NextRequest, res: NextResponse) {
     const supabase = createMiddlewareClient(req, res);
     await supabase.auth.getSession();
+    const { data: { session } } = await supabase.auth.getSession()
+
+    if (!session && !authRoutes.includes(req.nextUrl.pathname)) {
+        return NextResponse.redirect(new URL('/authentication/signin', req.url))
+    }
+    if (session && authRoutes.includes(req.nextUrl.pathname)) {
+        return NextResponse.redirect(new URL('/', req.url))
+    }
+
     return res;
 }
 
